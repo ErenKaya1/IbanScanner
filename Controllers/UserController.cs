@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +25,7 @@ namespace Controllers
         }
 
         [HttpPost("/SignUp")]
-        public IActionResult SignUp(UserRegisterViewModel model)
+        public async Task<IActionResult> SignUp(UserRegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +33,21 @@ namespace Controllers
                 return View(model);
             }
 
-            return RedirectToAction("index", "home");
+            var user = new IbanScannerUser
+            {
+                Id = Guid.NewGuid(),
+                UserName = model.Username,
+                Email = model.Email
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                TempData["SignUpMessage"] = "You can login";
+                return RedirectToAction("login");
+            }
+            else return View(model);
         }
     }
 }
