@@ -25,6 +25,7 @@ namespace Controllers
         }
 
         [HttpPost("/SignUp")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(UserRegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -48,6 +49,12 @@ namespace Controllers
                 return RedirectToAction("login");
             }
             else return View(model);
+        }
+
+        [HttpGet("/SignIn")]
+        public IActionResult SignIn(string returnUrl)
+        {
+            return View();
         }
     }
 }

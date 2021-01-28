@@ -20,6 +20,7 @@ namespace Models.User
         [Required]
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
+        [StringLength(12)]
         public string Password { get; set; }
 
         [Required]
