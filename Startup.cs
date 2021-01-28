@@ -1,7 +1,9 @@
+using System;
 using Data;
 using Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +40,23 @@ namespace IbanScanner
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<IbanScannerContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/SignIn");
+                options.LogoutPath = new PathString("/SignOut");
+                options.Cookie = new CookieBuilder
+                {
+                    Name = "AspNetCoreIdentityUserCookie",
+                    HttpOnly = false,
+                    SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax,
+                    SecurePolicy = CookieSecurePolicy.Always
+                };
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(14);
+            });
+
+            services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromMinutes(5));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
