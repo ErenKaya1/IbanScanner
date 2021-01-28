@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Entity;
 using Microsoft.AspNetCore.Identity;
@@ -28,11 +26,7 @@ namespace Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(UserRegisterViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewData["SignUpError"] = "Please fill in the required fields";
-                return View(model);
-            }
+            if (!ModelState.IsValid) return View(model);
 
             var user = new IbanScannerUser
             {
@@ -42,11 +36,10 @@ namespace Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
-                TempData["SignUpMessage"] = "You can login";
-                return RedirectToAction("login");
+                TempData["SignUpMessage"] = "You can sign in";
+                return RedirectToAction("SignIn");
             }
             else return View(model);
         }
