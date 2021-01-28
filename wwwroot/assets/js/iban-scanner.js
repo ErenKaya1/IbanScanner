@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  // validation for sign up form.
   $(".signup-form").on("submit", function (e) {
     if (
       $("input[name='Username']").val() == "" ||
@@ -7,7 +8,7 @@ $(document).ready(function () {
       $("input[name='PasswordConfirm']").val() == ""
     ) {
       e.preventDefault();
-      toastr["error"]("Please fill in the required fields", "", {
+      toastr["error"]("Please fill in the required fields.", "", {
         positionClass: "toast-top-right",
         closeButton: true,
         progressBar: true,
@@ -51,6 +52,24 @@ $(document).ready(function () {
     } else if ($("input[name='Password']").val().length < 6) {
       e.preventDefault();
       toastr["error"]("Password cannot exceed 12 characters.", "", {
+        positionClass: "toast-top-right",
+        closeButton: true,
+        progressBar: true,
+        preventDuplicates: true,
+        newestOnTop: true,
+        rtl: $("body").attr("dir") === "rtl" || $("html").attr("dir") === "rtl",
+      });
+    }
+  });
+
+  // validation for sign in form.
+  $(".signin-form").on("submit", function (e) {
+    if (
+      $("input[name='Username']").val() == "" ||
+      $("input[name='Password']").val() == ""
+    ) {
+      e.preventDefault();
+      toastr["error"]("Please fill in the required fields.", "", {
         positionClass: "toast-top-right",
         closeButton: true,
         progressBar: true,
