@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Models.User
 {
-    [Bind(nameof(Username), nameof(Password))]
+    [Bind(nameof(Username), nameof(Password), nameof(RememberMe))]
     public class UserSignInViewModel
     {
         [Required]

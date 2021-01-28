@@ -56,5 +56,11 @@ namespace Controllers
         {
             return View();
         }
+
+        [HttpGet("/ForgotPassword")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
     }
 }
