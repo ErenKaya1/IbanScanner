@@ -1,4 +1,5 @@
 using Data;
+using Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,17 @@ namespace IbanScanner
         {
             services.AddControllersWithViews();
             services.AddDbContext<IbanScannerContext>(options => options.UseMySql(Configuration.GetConnectionString("MySqlProvider")));
+            services.AddIdentity<IbanScannerUser, IbanScannerRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters += "öçşığüÖÇŞİĞÜ";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
