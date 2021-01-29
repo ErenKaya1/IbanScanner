@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using Entity.DTOs;
 using Service.Contracts;
 
@@ -14,7 +15,7 @@ namespace Service
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public bool Send(MailDTO data)
+        public async Task Send(MailDTO data)
         {
             if (string.IsNullOrEmpty(Host)) throw new ArgumentNullException(Host);
             if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(Username);
@@ -36,15 +37,12 @@ namespace Service
 
                 try
                 {
-                    client.Send(mailMessage);
+                    await client.SendMailAsync(mailMessage);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return false;
                 }
-
-                return true;
             }
         }
     }

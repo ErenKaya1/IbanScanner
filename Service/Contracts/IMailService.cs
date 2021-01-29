@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Entity.DTOs;
 
 namespace Service.Contracts
@@ -9,6 +10,6 @@ namespace Service.Contracts
         bool UseSsl { get; set; }
         string Username { get; set; }
         string Password { get; set; }
-        bool Send(MailDTO data);
+        Task Send(MailDTO data);
     }
 }
