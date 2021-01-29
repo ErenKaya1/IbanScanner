@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using Service;
+using Service.Contracts;
 
 namespace IbanScanner
 {
@@ -57,6 +59,14 @@ namespace IbanScanner
             });
 
             services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromMinutes(5));
+            services.AddScoped<IMailService>(x => new MailService
+            {
+                Host = Configuration["Mail:Host"],
+                Port = string.IsNullOrEmpty(Configuration["Mail:Port"]) ? 0 : Convert.ToInt32(Configuration["Mail:Port"]),
+                Username = Configuration["Mail:Username"],
+                Password = Configuration["Mail:Password"],
+                UseSsl = !string.IsNullOrEmpty(Configuration["Mail:UseSsl"]) && Convert.ToBoolean(Configuration["Mail:UseSsl"]),
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
