@@ -8,7 +8,7 @@ namespace Models.User
     public class UserResetPasswordViewModel
     {
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         public string ResetToken { get; set; }

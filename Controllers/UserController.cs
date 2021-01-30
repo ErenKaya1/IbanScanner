@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.User;
 using Service.Contracts;
+using Utils;
 
 namespace Controllers
 {
@@ -92,13 +93,33 @@ namespace Controllers
         [HttpGet("/ResetPassword")]
         public IActionResult ResetPassword(string userId, string token)
         {
-            return View();
+            var model = new UserResetPasswordViewModel
+            {
+                UserId = userId,
+                ResetToken = HttpUtility.UrlDecode(token),
+            };
+
+            return View(model);
         }
 
         [HttpPost("/ResetPassword")]
-        public IActionResult ResetPassword(UserResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(UserResetPasswordViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid || model.Password != model.PasswordConfirm) return View(model);
+
+            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+            if (user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, model.ResetToken, model.Password);
+                if (result.Succeeded)
+                {
+                    TempData["ResetPasswordMessage"] = "You can login with new password.";
+                    return RedirectToAction(nameof(SignIn));
+                }
+            }
+
+            ViewData["ResetPasswordError"] = Messages.DEFAULT_ERROR_MESSAGE;
+            return View(model);
         }
     }
 }
