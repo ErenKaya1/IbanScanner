@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Entity;
 using Entity.DTOs;
+using Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.User;
@@ -15,12 +16,14 @@ namespace Controllers
     public class UserController : Controller
     {
         private readonly UserManager<IbanScannerUser> _userManager;
+        private readonly SignInManager<IbanScannerUser> _signInManager;
         private readonly IMailService _mailService;
 
-        public UserController(UserManager<IbanScannerUser> userManager, IMailService mailService)
+        public UserController(UserManager<IbanScannerUser> userManager, IMailService mailService, SignInManager<IbanScannerUser> signInManager)
         {
             _userManager = userManager;
             _mailService = mailService;
+            _signInManager = signInManager;
         }
 
         [HttpGet("/SignUp")]
@@ -52,9 +55,35 @@ namespace Controllers
         }
 
         [HttpGet("/SignIn")]
-        public IActionResult SignIn(string returnUrl)
+        public IActionResult SignIn(string returnUrl = null)
         {
+            TempData["returnUrl"] = returnUrl;
             return View();
+        }
+
+        [HttpPost("/SignIn")]
+        public async Task<IActionResult> SignIn(UserSignInViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            IbanScannerUser user;
+            var loginProvider = Utility.GetLoginProvider(model.Username);
+            if (loginProvider == LoginProvider.Email) user = await _userManager.FindByEmailAsync(model.Username);
+            else user = await _userManager.FindByNameAsync(model.Username);
+
+            if (user != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    if (TempData["returnUrl"] != null)
+                        return Redirect(TempData["returnUrl"].ToString());
+                    return RedirectToAction("index", "home");
+                }
+            }
+
+            ViewData["SignInError"] = "Please check the information.";
+            return View(model);
         }
 
         [HttpGet("/ForgotPassword")]
@@ -103,6 +132,7 @@ namespace Controllers
         }
 
         [HttpPost("/ResetPassword")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(UserResetPasswordViewModel model)
         {
             if (!ModelState.IsValid || model.Password != model.PasswordConfirm) return View(model);
