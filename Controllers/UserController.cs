@@ -151,5 +151,12 @@ namespace Controllers
             ViewData["ResetPasswordError"] = Messages.DEFAULT_ERROR_MESSAGE;
             return View(model);
         }
+
+        [HttpGet("/SignOut")]
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("index", "home");
+        }
     }
 }

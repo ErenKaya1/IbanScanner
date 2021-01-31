@@ -25,12 +25,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Scan</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="User" asp-action="SignIn">Sign In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="User" asp-action="SignUp">Register</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Ibans">My IBANs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="SignOut">Sign Out</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="SignIn">Sign In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="SignUp">Register</a>
+                            </li>
+                        }
+                        
                     </ul>
                 </div>
             </div>
