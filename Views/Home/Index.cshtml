@@ -5,7 +5,7 @@
 }
 
 <div class="d-flex justify-content-center align-items-center">
-    <form asp-controller="home" asp-action="index" asp-antiforgery="false" method="POST" class="ibanscanner-form">
+    <form asp-controller="home" asp-action="index" asp-antiforgery="false" method="POST" class="ibanscanner-form" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="ImageFile" class="form-label"></label>
             <input asp-for="ImageFile" class="form-control">
