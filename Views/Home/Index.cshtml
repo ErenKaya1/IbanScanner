@@ -1,4 +1,15 @@
+ @model Models.Iban.IbanScanViewModel
+
 @{
     ViewData["Title"] = "Home";
 }
 
+<div class="d-flex justify-content-center align-items-center">
+    <form asp-controller="home" asp-action="index" asp-antiforgery="false" method="POST" class="ibanscanner-form">
+        <div class="form-group">
+            <label asp-for="ImageFile" class="form-label"></label>
+            <input asp-for="ImageFile" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Scan</button>
+    </form>
+</div>
